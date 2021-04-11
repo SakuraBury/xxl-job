@@ -21,6 +21,19 @@ import java.util.Date;
 /**
  * xxl-job trigger
  * Created by xuxueli on 17/7/13.
+ *
+ * 主要功能：
+ * 1. 可以通过指定参数来执行job，而不指定时会用配置的参数
+ * 2. 失败重试策略及实现
+ * 3. sharding 任务分片策略及实现：
+ * 3.1 分片貌似不是在这里实现的
+ * 3.2 这里只是实现了根据策略取出特点的执行器地址
+ * 3.3 然后根据执行器地址，从 XxlJobScheduler 里面取出对应的执行器
+ * 3.4 执行器，执行任务，实际就是通过HTTPS调用该地址的远程服务接口
+ *
+ * TODO:
+ * 任务日志的收集和跟踪实现
+ *
  */
 public class XxlJobTrigger {
     private static Logger logger = LoggerFactory.getLogger(XxlJobTrigger.class);
@@ -143,12 +156,12 @@ public class XxlJobTrigger {
         ReturnT<String> routeAddressResult = null;
         if (group.getRegistryList()!=null && !group.getRegistryList().isEmpty()) {
             if (ExecutorRouteStrategyEnum.SHARDING_BROADCAST == executorRouteStrategyEnum) {
-                if (index < group.getRegistryList().size()) {
+                if (index < group.getRegistryList().size()) {   // 这里的本质就是，从registryList 里面顺序取出执行器地址
                     address = group.getRegistryList().get(index);
                 } else {
                     address = group.getRegistryList().get(0);
                 }
-            } else {
+            } else { // 这里就是根据不同的路由策略，做不同的路由方式，策略有默认的，也可以让用户自定义
                 routeAddressResult = executorRouteStrategyEnum.getRouter().route(triggerParam, group.getRegistryList());
                 if (routeAddressResult.getCode() == ReturnT.SUCCESS_CODE) {
                     address = routeAddressResult.getContent();

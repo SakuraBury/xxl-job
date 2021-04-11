@@ -24,6 +24,7 @@ import java.util.Map;
 
 /**
  * @author xuxueli 2019-05-04 16:39:50
+ * 用户相关的接口，登陆，增删改查
  */
 @Controller
 @RequestMapping("/user")

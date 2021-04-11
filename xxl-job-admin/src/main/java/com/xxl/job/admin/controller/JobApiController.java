@@ -30,7 +30,9 @@ public class JobApiController {
 
     /**
      * api
-     *
+     * TODO:
+     * 这个token使用的是配置文件的，而且是在请求header里面明文传输的，安全性不是很高啊
+     * 这里应该用签名算法，token只是作为签名密钥来存在吧
      * @param uri
      * @param data
      * @return

@@ -24,6 +24,7 @@ import java.util.Map;
 
 /**
  * index controller
+ * 首页的相关接口
  * @author xuxueli 2015-12-19 16:13:16
  */
 @Controller

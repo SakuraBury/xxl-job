@@ -12,6 +12,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * job trigger thread pool helper
  *
+ * 这个就是XXL-JOB的线程池隔离
+ * XXL-JOB 会维护两个线程池：FAST / SLOW 分别执行耗时不同的任务，系统启动时创建
+ *
+ * 线程池停止时是，分别调用的 FAST 和 SLOW 的 shutdownNow，如果抛异常了咋办。
+ * 因为，是直接调用的shutdownNow，因此不会等待任务执行完，需要业务自己处理结束事件。
+ *
+ * TODO：
+ * 那么什么时候，作业放入FAST，什么时候放入SLOW呢，应该是在作业调度逻辑里.
+ * 写死的500ms就会放入慢队列，不利于业务自定义场景
+ * 写死的1分钟10次的检查，不利于业务自定义场景
+ *
  * @author xuxueli 2018-07-03 21:08:07
  */
 public class JobTriggerPoolHelper {
